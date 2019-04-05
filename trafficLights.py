@@ -12,7 +12,7 @@ s1.flushInput()
 led1 = LED(2)
 led2 = LED(3)
 led3 = LED(4)
-button = Button(5)
+button = Button(24)
 #  what mode to be showing
 flashMode = False
 
