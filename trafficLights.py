@@ -54,14 +54,14 @@ while True:
   if button.is_pressed():
     # if button is pressed
     # change mode
-    flashMode = !flashMode
+    flashMode = not flashMode
     # send to Arduino
     signalToArduino(flashMode)
 
   # test if signal from arduino
   if signalFromArduino():
     # if true change mode
-    flashMode = !flashMode
+    flashMode = not flashMode
 
   # do one loop of the lights sequence
   if flashMode:
