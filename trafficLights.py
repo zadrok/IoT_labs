@@ -51,7 +51,7 @@ def signalFromArduino():
 # loop for order of operations
 while True:
   # test button
-  if button.is_pressed():
+  if button.is_pressed:
     # if button is pressed
     # change mode
     flashMode = not flashMode
