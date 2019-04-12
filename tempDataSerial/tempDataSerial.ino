@@ -1,4 +1,5 @@
 int tempPin = A0;
+float val;
 
 void setup() {
   // put your setup code here, to run once:
@@ -7,7 +8,10 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  int val = analogRead(tempPin);
-  Serial.write( val );
-  delay(100);
+  val = analogRead(tempPin);
+  float celVal = (val/1024.0)*500;
+//  Serial.write( celVal );
+  Serial.print( celVal );
+  Serial.println();
+  delay(1000);
 }
