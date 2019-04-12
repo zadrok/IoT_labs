@@ -8,12 +8,18 @@
     <h1>Smart Fan Controller</h1>
     <h2>Temperature from Arduino: {{ arduinoTemp }}</h2>
     <h2>Fan status: {{ arduinoFanStatus }}</h2>
+
+    <form action="/changeCity" method="post" novalidate>
+      <h2>{{ formCity.city.label }}: {{ formCity.city(size=32) }}</h2>
+      <p>{{ formCity.submit() }}</p>
+    </form>
+
     <h2>Temperature outside: {{ outsideTemp }}</h2>
 
     <form action="/changeTempThreshold" method="post" novalidate>
-      <h2>{{ form.tmepTreshold.label }}: {{ form.tmepTreshold(size=32) }}</h2>
-      <p>{{ form.submit() }}</p>
-  </form>
+      <h2>{{ formTemp.tmepTreshold.label }}: {{ formTemp.tmepTreshold(size=32) }}</h2>
+      <p>{{ formTemp.submit() }}</p>
+    </form>
 
 
 
