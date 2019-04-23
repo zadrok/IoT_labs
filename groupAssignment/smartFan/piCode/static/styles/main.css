@@ -1,0 +1,71 @@
+html {
+  background:
+  linear-gradient(#00334d,#00334d),
+  url(../../static/images/daniil-silantev-1320924-unsplash.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-blend-mode: soft-light;
+}
+
+* {
+  font-family: 'Open Sans Condensed', sans-serif;
+  text-align: center;
+}
+
+h1, h2, h3 {
+  color: #FFFFFF;
+}
+
+h1 {
+  font-size: 20px;
+}
+
+h2 {
+  font-size: 40px;
+}
+
+h3 {
+  font-size: 25px;
+}
+
+.wrapper {
+  clear: both;
+}
+
+#smartFan {
+  padding-top: 40px;
+  padding-bottom: 60px;
+}
+
+#ardTemp {
+  float:left;
+  padding-left: 15%;
+}
+
+#fanStatus {
+  float: right;
+  padding-right: 15%;
+}
+
+#city {
+  background-color: transparent;
+  color: #FFFFFF;
+  font-size: 30px;
+  border-style: none;
+  border-bottom: 1px solid #FFFFFF;
+}
+
+#tmepTreshold {
+  background-color: transparent;
+  color: #FFFFFF;
+  border-radius: 15px;
+  font-size: 15px;
+  border-style: none;
+  border-bottom: 1px solid #FFFFFF;
+}
+
+#cityWrap {
+  padding-bottom: 30px;
+}
