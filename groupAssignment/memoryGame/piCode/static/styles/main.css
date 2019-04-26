@@ -29,16 +29,24 @@ a {
   transform: translate(-50%, -50%);
 }
 
-#playerID {
+#inputID {
   position: absolute;
   top: 55%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
-#playerLVL {
+#playerID {
+  background-color: transparent;
+  color: #FFFFFF;
+  font-size: 30px;
+  border-style: none;
+  border-bottom: 1px solid #FFFFFF;
+}
+
+#info {
   position: absolute;
-  top: 60%;
+  top: 70%;
   left: 50%;
   transform: translate(-50%, -50%);
 }

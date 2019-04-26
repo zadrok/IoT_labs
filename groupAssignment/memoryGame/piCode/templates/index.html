@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>Memory Game</title>
+    <title>{{ title }}</title>
     <link rel="stylesheet" type="text/css" href="../static/styles/main.css">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet">
   </head>
@@ -10,12 +10,16 @@
       <h1>Memory Game</h1>
     </div>
 
-    <div id="playerID">
-      <h2>Player ID: </h2>
+    <div id="inputID">
+      <form action= "/send" method = "POST" novalidate>
+        <h2>{{ formID.playerID.label }}: {{ formID.playerID(size=32) }}</h2>
+        <p>{{ formID.submit() }}</p>
+      </form>
     </div>
 
-    <div id="playerLVL">
-      <h2>Player level: </h2>
+    <div id="info">
+      <h2>Player ID: {{ playerID }} </h2>
+      <h2>Player level: {{ playerLVL }}</h2>
     </div>
 
     <div id="footer">
