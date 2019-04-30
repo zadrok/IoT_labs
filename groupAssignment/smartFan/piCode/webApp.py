@@ -3,6 +3,14 @@ from flask_wtf import FlaskForm
 from wtforms import DecimalField, StringField, SubmitField
 from wtforms.validators import DataRequired
 import requests, json
+import serial
+
+port = "/dev/ttyACM0"
+
+# open the serial port to talk over
+s1 = serial.Serial(port,9600)
+# clean the serial port
+s1.flushInput()
 
 # create the Flask instance
 app = Flask(__name__)
@@ -12,8 +20,37 @@ app.config['SECRET_KEY'] = 'a-good-password'
 # this class us used to interface with the Arduino
 class Arduino:
   def __init__(self):
-    self.threshold = 20
     self.city = 'melbourne'
+    self.temp = None
+    self.fanStatus = None
+    self.threshold = 20
+
+  def write(self,obj):
+    s1.write(obj)
+
+  def read(self):
+    # make sure there is some data to read
+    if s1.inWaiting():
+      # there could be more then one message in the queue
+      # not sure if this is how it works
+      # but get most reacent message (i think, test!)
+      while s1.inWaiting():
+        # read the last message
+        result = s1.read()
+        # split into parts, each part having some of the data
+        parts = result.split(', ')
+        # for each of the datas
+        for part in parts:
+          # take data name and assign it to its value
+          vals = part.split(':')
+          if vals[0] is 'temp':
+            self.temp = vals[1]
+          elif vals[0] is 'fanStatus':
+            self.fanStatus = vals[1]
+          elif vals[0] is 'threshold':
+            self.threshold = vals[1]
+
+    return self.temp, self.fanStatus, self.threshold
 
 # instace of Arduino class
 ard = Arduino()
@@ -54,11 +91,10 @@ def getTemp(city):
 def index():
   # collect all information to show to user
   title = 'Fan Controller'
-  arduinoTemp = None
-  arduinoFanStatus = None
+  arduinoTemp, arduinoFanStatus, arduinoThreshold = ard.read()
   outsideTemp = getTemp(ard.city)
   formTemp = TempForm()
-  formTemp.tmepTreshold.data = ard.threshold
+  formTemp.tmepTreshold.data = arduinoThreshold
   formCity = CityForm()
   formCity.city.data = ard.city
   # return the webpage and pass it all of the information
@@ -76,7 +112,7 @@ def changeTempThreshold():
       # try and change value
       # probably don't need the try catch for our needs here
       # but goot to make sure value ented into form is an int
-      ard.threshold = int( tmepTreshold )
+      ard.write( int( tmepTreshold ) )
     except:
       pass
   # return the user to the main page
