@@ -46,15 +46,15 @@ class Arduino:
           # take data name and assign it to its value
           vals = part.split(':')
           print( 'vals: ' + vals[0] + ' ' + vals[1] )
-          if vals[0] is 'temp':
+          if vals[0].find('temp'):
             print( 'vals is temp' )
-            self.temp = vals[1]
-          elif vals[0] is 'fanStatus':
+            self.temp = float(vals[1])
+          elif vals[0].find('fanStatus'):
             print( 'vals is fanStatus' )
-            self.fanStatus = vals[1]
-          elif vals[0] is 'threshold':
+            self.fanStatus = bool(vals[1])
+          elif vals[0].find('threshold'):
             print( 'vals is threshold' )
-            self.threshold = vals[1]
+            self.threshold = float(vals[1])
         print( 'local memory: ' + 'temp: ' + str( self.temp ) + ', fanStatus: ' + str( self.fanStatus ) + ', threshold: ' + str( self.threshold ) )
 
     return self.temp, self.fanStatus, self.threshold
