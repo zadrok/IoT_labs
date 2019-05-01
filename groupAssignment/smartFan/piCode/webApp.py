@@ -49,6 +49,7 @@ class Arduino:
             self.fanStatus = vals[1]
           elif vals[0] is 'threshold':
             self.threshold = vals[1]
+        print( 'temp: ' + str( self.temp ) + ', fanStatus: ' + str( self.fanStatus ) + ', threshold: ' + str( self.threshold ) )
 
     return self.temp, self.fanStatus, self.threshold
 
@@ -112,7 +113,7 @@ def changeTempThreshold():
       # try and change value
       # probably don't need the try catch for our needs here
       # but goot to make sure value ented into form is an int
-      ard.write( int( tmepTreshold ) )
+      ard.write( str( tmepTreshold ) )
     except:
       pass
   # return the user to the main page

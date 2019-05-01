@@ -16,8 +16,14 @@ void loop() {
   temp = analogRead(A0);
   temp = temp * tempMultiplier;
 
-  msg = "temp:" + String(temp) + ", fanStatus:" + String(fanStatus) + ", threshold:" + String(threshold);
+  String msg = "temp:" + String(temp) + ", fanStatus:" + String(fanStatus) + ", threshold:" + String(threshold);
   Serial.println(msg);
+
+  if (Serial.available() > 0)
+  {
+    String data = Serial.readString();
+    threshold = data.toFloat();
+  }
 
   delay(1000);
 }
