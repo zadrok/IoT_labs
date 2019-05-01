@@ -1,5 +1,6 @@
 import serial
 from random import randint
+import time
 
 port = "/dev/ttyACM0"
 
@@ -16,3 +17,5 @@ while(True):
     print( 'serial string: ' + result )
 
   s1.write( randint(0, 100) )
+
+  time.sleep(1)
