@@ -38,6 +38,7 @@ class Arduino:
         # read the last message
         result = s1.read()
         # split into parts, each part having some of the data
+        print( result )
         parts = result.split(', ')
         # for each of the datas
         for part in parts:
