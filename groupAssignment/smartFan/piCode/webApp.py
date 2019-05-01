@@ -36,9 +36,9 @@ class Arduino:
       # but get most reacent message (i think, test!)
       while s1.inWaiting():
         # read the last message
-        result = str( s1.readline() )
+        result = str( s1.readline() )[2:-5]
         # split into parts, each part having some of the data
-        print( 'serial string: ' + result[2:-5] )
+        print( 'serial string: ' + result )
         parts = result.split(', ')
         # for each of the datas
         for part in parts:
