@@ -14,10 +14,12 @@ while(True):
 
   if s1.inWaiting():
     result = str( s1.readline() )[2:-5]
-    print( 'serial string: ' + result )
+    print( 'serial: ' + result )
   else:
     print( 'nothing waiting' )
 
-  s1.write( randint(1, 100) )
+  value = str( randint(1, 100) )
+  print( 'sending: ' + value )
+  s1.write( value )
 
   time.sleep(1)
