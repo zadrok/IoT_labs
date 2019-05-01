@@ -22,6 +22,7 @@ void loop() {
   if (Serial.available() > 0)
   {
     String data = Serial.readString();
+    Serial.println(data);
     threshold = data.toFloat();
   }
 
