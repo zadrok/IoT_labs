@@ -1,0 +1,19 @@
+import serial
+from random import randint
+
+port = "/dev/ttyACM0"
+
+# open the serial port to talk over
+s1 = serial.Serial(port,9600)
+# clean the serial port
+s1.flushInput()
+
+
+while(True):
+  
+  if s1.inWaiting():
+    while s1.inWaiting():
+      result = str( s1.readline() )[2:-5]
+      print( 'serial string: ' + result )
+
+  s1.write( randint(0, 100) )
