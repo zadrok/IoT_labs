@@ -51,7 +51,7 @@ class Arduino:
             self.temp = float(vals[1])
           elif vals[0] == 'fanStatus':
             print( 'vals is fanStatus' )
-            self.fanStatus = bool(vals[1])
+            self.fanStatus = True if int(vals[1]) > 0 else False
           elif vals[0] == 'threshold':
             print( 'vals is threshold' )
             self.threshold = float(vals[1])
@@ -69,7 +69,7 @@ class CityForm(FlaskForm):
 
 # class for the form to change temp threshold
 class TempForm(FlaskForm):
-  tmepTreshold = DecimalField('Temperature Threshold', validators=[DataRequired()])
+  tempTreshold = DecimalField('Temperature Threshold', validators=[DataRequired()])
   submit = SubmitField('Submit')
 
 # covert the temp received from API from kelvin to celsius
@@ -101,7 +101,7 @@ def index():
   arduinoTemp, arduinoFanStatus, arduinoThreshold = ard.read()
   outsideTemp = getTemp(ard.city)
   formTemp = TempForm()
-  formTemp.tmepTreshold.data = arduinoThreshold
+  formTemp.tempTreshold.data = arduinoThreshold
   formCity = CityForm()
   formCity.city.data = ard.city
   # return the webpage and pass it all of the information
@@ -114,12 +114,12 @@ def changeTempThreshold():
   # form submited
   if request.method == 'POST':
       # grab data from form
-    tmepTreshold = request.form['tmepTreshold']
+    tempTreshold = request.form['tempTreshold']
     try:
       # try and change value
       # probably don't need the try catch for our needs here
       # but goot to make sure value ented into form is an int
-      ard.write( str( tmepTreshold ) )
+      ard.write( str( tempTreshold ) )
     except:
       pass
   # return the user to the main page
