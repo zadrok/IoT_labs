@@ -140,4 +140,4 @@ def changeCity():
 # this if chechs to make sure this is the python file is the one that is being run
 # this is one way to do testing
 if __name__ == '__main__':
-  app.run()
+  app.run(host='0.0.0.0')
