@@ -10,10 +10,9 @@ s1.flushInput()
 
 
 while(True):
-  
+
   if s1.inWaiting():
-    while s1.inWaiting():
-      result = str( s1.readline() )[2:-5]
-      print( 'serial string: ' + result )
+    result = str( s1.readline() )[2:-5]
+    print( 'serial string: ' + result )
 
   s1.write( randint(0, 100) )
