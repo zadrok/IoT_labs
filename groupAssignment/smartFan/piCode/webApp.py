@@ -25,8 +25,9 @@ class Arduino:
     self.fanStatus = None
     self.threshold = 20
 
-  def write(self,obj):
-    s1.write(obj)
+  def write(self,value):
+    value = str( value )
+    s1.write( str( value + '\r' ).encode() )
 
   def read(self):
     # make sure there is some data to read
@@ -119,7 +120,7 @@ def changeTempThreshold():
       # try and change value
       # probably don't need the try catch for our needs here
       # but goot to make sure value ented into form is an int
-      ard.write( str( tempTreshold ) )
+      ard.write( tempTreshold )
     except:
       pass
   # return the user to the main page

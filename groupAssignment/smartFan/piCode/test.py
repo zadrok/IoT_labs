@@ -20,6 +20,6 @@ while(True):
 
   value = str( randint(1, 100) )
   print( 'sending: ' + value )
-  s1.write( str.encode( value ) )
+  s1.write( str( value + '\r' ).encode() )
 
   time.sleep(1)
