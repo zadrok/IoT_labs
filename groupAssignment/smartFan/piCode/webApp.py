@@ -39,24 +39,24 @@ class Arduino:
         # read the last message
         result = str( s1.readline() )[2:-5]
         # split into parts, each part having some of the data
-        print( 'serial string: ' + result )
+        # print( 'serial string: ' + result )
         parts = result.split(', ')
         # for each of the datas
         for part in parts:
-          print( 'part: ' + part )
+          # print( 'part: ' + part )
           # take data name and assign it to its value
           vals = part.split(':')
-          print( 'vals: ' + vals[0] + ' ' + vals[1] )
+          # print( 'vals: ' + vals[0] + ' ' + vals[1] )
           if vals[0] == 'temp':
-            print( 'vals is temp' )
+            # print( 'vals is temp' )
             self.temp = float(vals[1])
           elif vals[0] == 'fanStatus':
-            print( 'vals is fanStatus' )
+            # print( 'vals is fanStatus' )
             self.fanStatus = True if int(vals[1]) > 0 else False
           elif vals[0] == 'threshold':
-            print( 'vals is threshold' )
+            # print( 'vals is threshold' )
             self.threshold = float(vals[1])
-        print( 'local memory: ' + 'temp: ' + str( self.temp ) + ', fanStatus: ' + str( self.fanStatus ) + ', threshold: ' + str( self.threshold ) )
+        # print( 'local memory: ' + 'temp: ' + str( self.temp ) + ', fanStatus: ' + str( self.fanStatus ) + ', threshold: ' + str( self.threshold ) )
 
     return self.temp, self.fanStatus, self.threshold
 
