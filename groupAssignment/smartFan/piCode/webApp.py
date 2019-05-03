@@ -3,6 +3,14 @@ from flask_wtf import FlaskForm
 from wtforms import DecimalField, StringField, SubmitField
 from wtforms.validators import DataRequired
 import requests, json
+import serial
+
+port = "/dev/ttyACM0"
+
+# open the serial port to talk over
+s1 = serial.Serial(port,9600)
+# clean the serial port
+s1.flushInput()
 
 # create the Flask instance
 app = Flask(__name__)
@@ -12,8 +20,45 @@ app.config['SECRET_KEY'] = 'a-good-password'
 # this class us used to interface with the Arduino
 class Arduino:
   def __init__(self):
-    self.threshold = 20
     self.city = 'melbourne'
+    self.temp = None
+    self.fanStatus = None
+    self.threshold = 20
+
+  def write(self,value):
+    value = str( value )
+    s1.write( str( value + '\r' ).encode() )
+
+  def read(self):
+    # make sure there is some data to read
+    if s1.inWaiting():
+      # there could be more then one message in the queue
+      # not sure if this is how it works
+      # but get most reacent message (i think, test!)
+      while s1.inWaiting():
+        # read the last message
+        result = str( s1.readline() )[2:-5]
+        # split into parts, each part having some of the data
+        # print( 'serial string: ' + result )
+        parts = result.split(', ')
+        # for each of the datas
+        for part in parts:
+          # print( 'part: ' + part )
+          # take data name and assign it to its value
+          vals = part.split(':')
+          # print( 'vals: ' + vals[0] + ' ' + vals[1] )
+          if vals[0] == 'temp':
+            # print( 'vals is temp' )
+            self.temp = float(vals[1])
+          elif vals[0] == 'fanStatus':
+            # print( 'vals is fanStatus' )
+            self.fanStatus = True if int(vals[1]) > 0 else False
+          elif vals[0] == 'threshold':
+            # print( 'vals is threshold' )
+            self.threshold = float(vals[1])
+        # print( 'local memory: ' + 'temp: ' + str( self.temp ) + ', fanStatus: ' + str( self.fanStatus ) + ', threshold: ' + str( self.threshold ) )
+
+    return self.temp, self.fanStatus, self.threshold
 
 # instace of Arduino class
 ard = Arduino()
@@ -25,7 +70,7 @@ class CityForm(FlaskForm):
 
 # class for the form to change temp threshold
 class TempForm(FlaskForm):
-  tmepTreshold = DecimalField('Temperature Threshold', validators=[DataRequired()])
+  tempTreshold = DecimalField('Temperature Threshold', validators=[DataRequired()])
   submit = SubmitField('Submit')
 
 # covert the temp received from API from kelvin to celsius
@@ -54,11 +99,10 @@ def getTemp(city):
 def index():
   # collect all information to show to user
   title = 'Fan Controller'
-  arduinoTemp = None
-  arduinoFanStatus = None
+  arduinoTemp, arduinoFanStatus, arduinoThreshold = ard.read()
   outsideTemp = getTemp(ard.city)
   formTemp = TempForm()
-  formTemp.tmepTreshold.data = ard.threshold
+  formTemp.tempTreshold.data = arduinoThreshold
   formCity = CityForm()
   formCity.city.data = ard.city
   # return the webpage and pass it all of the information
@@ -71,12 +115,12 @@ def changeTempThreshold():
   # form submited
   if request.method == 'POST':
       # grab data from form
-    tmepTreshold = request.form['tmepTreshold']
+    tempTreshold = request.form['tempTreshold']
     try:
       # try and change value
       # probably don't need the try catch for our needs here
       # but goot to make sure value ented into form is an int
-      ard.threshold = int( tmepTreshold )
+      ard.write( tempTreshold )
     except:
       pass
   # return the user to the main page
@@ -105,3 +149,4 @@ def changeCity():
 if __name__ == '__main__':
   #app.run()
   app.run(debug=True)
+app.run(host='0.0.0.0')
