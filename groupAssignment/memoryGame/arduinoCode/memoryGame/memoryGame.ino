@@ -47,7 +47,9 @@ void setup() {
 
 
 // Memory game level 1
-void level_1() 
+
+int level_1() 
+
 {
   repeat = random(10);
   for (int i = 0; i < repeat; i++)
@@ -60,11 +62,14 @@ void level_1()
  
   Serial.println(repeat); // send answer to pi
   //get_input();
-  delay(5000);
-  sevseg.setNumber(repeat); // show answer on LED display
-  sevseg.refreshDisplay();
-  delay(1000);
-  
+
+  //delay(5000);
+//  sevseg.setNumber(repeat); // show answer on LED display
+//  sevseg.refreshDisplay();
+//  delay(1000);
+
+  return repeat;
+
 }
 
 // shorter delays
@@ -109,64 +114,87 @@ void level_up(int current_level)
 {
 }
 
+
+int get_input()
+{
+ 
+   // what button pressed on remote
+   while (1)
+   
+  {
+    if (results.value) // blocking user input
+    {
+      irrecv.resume();
+    }
+    if (irrecv.decode(&results))
+
+  {
+      switch(results.value)
+      {
+        case 0xFFFFFF: // button held down
+        noTone(buzzer);
+
+        return -2;
+        
+        case 0xFD00FF: // Power button 
+        Serial.println("Let's go...");
+        return -1;
+        
+        case 0xFD30CF: // 0
+        return 0;
+        
+        case 0xFD08F7: // 1
+        return 1;
+       
+        case 0xFD8877: // 2
+        return 2;
+      
+        case 0xFD48B7: // 3
+        return 3;
+        
+        case 0xFD28D7: // 4
+        return 4;
+        case 0xFDA857: // 5
+        return 5;
+        case 0xFD6897: // 6
+        return 6;
+        case 0xFD18E7: // 7
+        return 7;
+        case 0xFD9867: // 8
+        return 8;
+        case 0xFD58A7: // 9
+        return 9;
+    }
+   irrecv.resume();
+  }}
+}
 void loop() 
 {
+  int answer;
+
+  int input = get_input();
+  if (input == -1)
+  {
+    answer = level_1();
+    //delay(5000);
+    int guess = get_input();
+    Serial.println(String(guess));
+    Serial.println(String(answer));
+    sevseg.setNumber(answer); // show answer on LED display
+    sevseg.refreshDisplay();
+    delay(1000);
+  }
+  
    if (Serial.available())
   {
     next_level = Serial.read() - '0';  
   }
   if (next_level == 1)
   {
-    level_up(current_level);
+    //level_up(current_level);
   }
 
-  // what button pressed on remote
-  if (irrecv.decode(&results))
-  {
-      switch(results.value)
-      {
-        case 0xFFFFFF: // button held down
-        noTone(buzzer);
-        break;
-        
-        case 0xFD00FF: // Power button 
-        Serial.println("Let's go...");
-        delay(1000);
-      // start game
-        level_1();
-        break;
-        
-        case 0xFD30CF: // 0
-        Serial.println("0");
-        break;
-        case 0xFD08F7: // 1
-        Serial.println("1");
-        break;
-        case 0xFD8877: // 2
-        Serial.println("2");
-        break;
-        case 0xFD48B7: // 3
-        Serial.println("3");
-        break;
-        case 0xFD28D7: // 4
-        Serial.println("4");
-        break;
-        case 0xFDA857: // 5
-        Serial.println("5");
-        break;
-        case 0xFD6897: // 6
-        Serial.println("6");
-        break;
-        case 0xFD18E7: // 7
-        Serial.println("7");
-        break;
-        case 0xFD9867: // 8
-        Serial.println("8");
-        break;
-        case 0xFD58A7: // 9
-        Serial.println("9");
-        break;  
-    }
-     irrecv.resume();
-  }
+
+      
+   
 }
