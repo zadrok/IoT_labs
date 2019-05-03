@@ -47,7 +47,9 @@ void setup() {
 
 
 // Memory game level 1
+
 int level_1() 
+
 {
   repeat = random(10);
   for (int i = 0; i < repeat; i++)
@@ -60,12 +62,14 @@ int level_1()
  
   Serial.println(repeat); // send answer to pi
   //get_input();
+
   //delay(5000);
 //  sevseg.setNumber(repeat); // show answer on LED display
 //  sevseg.refreshDisplay();
 //  delay(1000);
 
   return repeat;
+
 }
 
 // shorter delays
@@ -110,6 +114,7 @@ void level_up(int current_level)
 {
 }
 
+
 int get_input()
 {
  
@@ -122,11 +127,13 @@ int get_input()
       irrecv.resume();
     }
     if (irrecv.decode(&results))
+
   {
       switch(results.value)
       {
         case 0xFFFFFF: // button held down
         noTone(buzzer);
+
         return -2;
         
         case 0xFD00FF: // Power button 
@@ -187,4 +194,7 @@ void loop()
     //level_up(current_level);
   }
 
+
+      
+   
 }
