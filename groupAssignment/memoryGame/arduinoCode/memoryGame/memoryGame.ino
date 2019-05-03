@@ -112,14 +112,22 @@ void level_up(int current_level)
 
 int get_input()
 {
+ 
    // what button pressed on remote
-  if (irrecv.decode(&results))
+   while (1)
+   
+  {
+    if (results.value) // blocking user input
+    {
+      irrecv.resume();
+    }
+    if (irrecv.decode(&results))
   {
       switch(results.value)
       {
         case 0xFFFFFF: // button held down
         noTone(buzzer);
-        break;
+        return -2;
         
         case 0xFD00FF: // Power button 
         Serial.println("Let's go...");
@@ -151,7 +159,7 @@ int get_input()
         return 9;
     }
    irrecv.resume();
-  }
+  }}
 }
 void loop() 
 {
@@ -161,6 +169,7 @@ void loop()
   if (input == -1)
   {
     answer = level_1();
+    //delay(5000);
     int guess = get_input();
     Serial.println(String(guess));
     Serial.println(String(answer));
