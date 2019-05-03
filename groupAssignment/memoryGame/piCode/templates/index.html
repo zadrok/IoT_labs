@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>{{ title }}</title>
+    <link rel="stylesheet" type="text/css" href="../static/styles/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet">
+  </head>
+  <body>
+    <div id="title">
+      <h1>Memory Game</h1>
+    </div>
+
+    <div id="inputID">
+      <form action= "/send" method = "POST" novalidate>
+        <h2>{{ formID.playerID.label }} <br> {{ formID.playerID(size=32) }}</h2>
+        <p>{{ formID.submit() }}</p>
+      </form>
+    </div>
+
+    <div id="info">
+      <h2>Player ID: {{ playerID }} </h2>
+      <h2>Player level: {{ playerLVL }}</h2>
+    </div>
+
+    <div id="footer">
+      <a href="https://www.freepik.com/free-photos-vectors/background">
+        Background vector created by rawpixel.com
+      </a>
+    </div>
+
+  </body>
+</html>
