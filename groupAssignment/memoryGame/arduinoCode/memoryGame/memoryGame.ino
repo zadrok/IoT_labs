@@ -14,7 +14,8 @@ SevSeg sevseg;
 int IR_pin = 13;
 int buzzer = 12;
 int repeat;
-int next_level = 0; // boolean value for 3 correct answers
+byte next_level; 
+int current_level = 1;
 
 //#define REPEAT random(10) // randomise beeps 1 - 10
 #define TONE random(1000) // randomize tone
@@ -46,155 +47,129 @@ void setup() {
 }
 
 
-// Memory game level 1
-
-int level_1() 
-
+// Memory game levels
+int level_1(int current_level) 
 {
+  //Serial.println(String(current_level));
   repeat = random(10);
-  for (int i = 0; i < repeat; i++)
+  if (current_level == 1)
   {
-    tone(buzzer, TONE);
-    delay(500);
-    noTone(buzzer);
-    delay(750);
+    for (int i = 0; i < repeat; i++)
+      {
+        tone(buzzer, TONE);
+        delay(500);
+        noTone(buzzer);
+        delay(750);
+      }
   }
- 
-  Serial.println(repeat); // send answer to pi
-  //get_input();
 
-  //delay(5000);
-//  sevseg.setNumber(repeat); // show answer on LED display
-//  sevseg.refreshDisplay();
-//  delay(1000);
+  // LEVEL 2 - SHORTER DELAYS
+  if (current_level == 2)
+  {
+    for (int i = 0; i < repeat; i++)
+      {
+        tone(buzzer, TONE);
+        delay(250);
+        noTone(buzzer);
+        delay(250);
+      }
+  }
+
+  // LEVEL 3 - RANDOM DELAYS
+  if (current_level == 3)
+  {
+    for (int i = 0; i < repeat; i++)
+      {
+        tone(buzzer, TONE);
+        delay(random(500));
+        noTone(buzzer);
+        delay(random(500));
+      }
+  }
 
   return repeat;
-
-}
-
-// shorter delays
-void level_2()
-{
-   repeat = random(10);
-  for (int i = 0; i < repeat; i++)
-  {
-    tone(buzzer, TONE);
-    delay(250);
-    noTone(buzzer);
-    delay(250);
-  }
-  Serial.println(repeat);
-  delay(5000);
-  sevseg.setNumber(repeat);
-  sevseg.refreshDisplay();
-  delay(1000);
-}
-
-// random tone length and delay
-void level_3() 
-{
-   repeat = random(10);
-  for (int i = 0; i < repeat; i++)
-  {
-    tone(buzzer, TONE);
-    delay(random(500));
-    noTone(buzzer);
-    delay(random(500));
-  }
-  Serial.println(repeat);
-  delay(5000);
-  sevseg.setNumber(repeat);
-  sevseg.refreshDisplay();
-  delay(1000);
-  
-}
-
-// change level when signal from pi received
-void level_up(int current_level)
-{
 }
 
 
-int get_input()
+void loop() 
 {
- 
-   // what button pressed on remote
-   while (1)
-   
-  {
-    if (results.value) // blocking user input
+    int answer;
+    //int current_level = 1;
+    
+    if (Serial.available() > 0)
     {
-      irrecv.resume();
+      next_level = Serial.read(); 
     }
+    if (next_level == 'y')
+    {
+      current_level++;
+      //Serial.println(String(current_level));
+    }
+    // what button pressed on remote
     if (irrecv.decode(&results))
 
-  {
+    {
       switch(results.value)
       {
-        case 0xFFFFFF: // button held down
+        case 0xFFFFFF: // button held down, turn off
+        Serial.println("Goodbye...");
         noTone(buzzer);
 
-        return -2;
+        break;
         
         case 0xFD00FF: // Power button 
         Serial.println("Let's go...");
-        return -1;
+        answer = level_1(current_level);
+        Serial.println(String(answer));
+        sevseg.setNumber(answer); // show answer on LED display
+        sevseg.refreshDisplay();
+        delay(1000);
+        
+        break;
         
         case 0xFD30CF: // 0
-        return 0;
+        Serial.println(String(0));
+        break;
         
         case 0xFD08F7: // 1
-        return 1;
+        Serial.println(String(1));
+        break;
        
         case 0xFD8877: // 2
-        return 2;
+        Serial.println(String(2));
+        break;
       
         case 0xFD48B7: // 3
+        Serial.println(String(3));
         return 3;
         
         case 0xFD28D7: // 4
-        return 4;
+        Serial.println(String(4));
+        break;
+        
         case 0xFDA857: // 5
-        return 5;
+        Serial.println(String(5));
+        break;
+        
         case 0xFD6897: // 6
-        return 6;
+        Serial.println(String(6));
+        break;
+        
         case 0xFD18E7: // 7
-        return 7;
+        Serial.println(String(7));
+        break;
+        
         case 0xFD9867: // 8
-        return 8;
+        Serial.println(String(8));
+        break;
+        
         case 0xFD58A7: // 9
-        return 9;
+        Serial.println(String(9));
+        break;
     }
-   irrecv.resume();
-  }}
-}
-void loop() 
-{
-  int answer;
-
-  int input = get_input();
-  if (input == -1)
-  {
-    answer = level_1();
-    //delay(5000);
-    int guess = get_input();
-    Serial.println(String(guess));
-    Serial.println(String(answer));
-    sevseg.setNumber(answer); // show answer on LED display
-    sevseg.refreshDisplay();
-    delay(1000);
+    irrecv.resume();
+    
   }
   
-   if (Serial.available())
-  {
-    next_level = Serial.read() - '0';  
-  }
-  if (next_level == 1)
-  {
-    //level_up(current_level);
-  }
-
-
-      
-   
+  
 }
