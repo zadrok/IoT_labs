@@ -49,7 +49,7 @@ class Arduino:
           # print( 'vals: ' + vals[0] + ' ' + vals[1] )
           if vals[0] == 'temp':
             # print( 'vals is temp' )
-            if not vals[1].contains('te'):
+            if 'te' not in vals[1]:
               self.temp = float(vals[1])
           elif vals[0] == 'fanStatus':
             # print( 'vals is fanStatus' )
