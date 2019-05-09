@@ -28,4 +28,16 @@ def check_input():
 while True:
     level_up = check_input()
     if (level_up):
-        arduino.write(b'y')
+        print("Starting level 2...")
+        for i in range(1):
+            arduino.write(b'y')
+    level_three = check_input()
+    if (level_three):
+        print("Starting level 3...")
+        for i in range(1):
+            arduino.write(b'z')
+    mario = check_input()
+    if (mario):
+        print("WINNER!!!")
+            arduino.write(b'm')
+    
