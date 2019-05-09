@@ -17,18 +17,22 @@ void setup() {
 }
 
 void loop() {
-  temp = analogRead(A0);
-  temp = temp * tempMultiplier;
-
-  String msg = "temp:" + String(temp) + ", fanStatus:" + String(fanStatus) + ", threshold:" + String(threshold);
-  Serial.println(msg);
-
+  
   if (Serial.available() > 0)
   {
     String data = Serial.readString();
   // Serial.println(data);
     threshold = data.toFloat();
   }
+  
+  
+  temp = analogRead(A0);
+  temp = temp * tempMultiplier;
+
+  String msg = "temp:" + String(temp) + ", fanStatus:" + String(fanStatus) + ", threshold:" + String(threshold);
+  Serial.println(msg);
+
+  
 
   // fan
   if (temp < threshold)
@@ -45,5 +49,5 @@ void loop() {
   }
   digitalWrite(relayPin, relayState);
 
-  delay(1000);
+  delay(500);
 }
