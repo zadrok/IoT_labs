@@ -1,9 +1,11 @@
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, current_app, g
 from flask_wtf import FlaskForm
 from wtforms import DecimalField, StringField, SubmitField
 from wtforms.validators import DataRequired
 import requests, json
 import serial
+import sqlite3 as sql
+import datetime
 
 port = "/dev/ttyACM0"
 
@@ -59,6 +61,10 @@ class Arduino:
             self.threshold = float(vals[1])
         # print( 'local memory: ' + 'temp: ' + str( self.temp ) + ', fanStatus: ' + str( self.fanStatus ) + ', threshold: ' + str( self.threshold ) )
 
+    conn = getDBConnection()
+    cur = conn.cursor()
+    cur.execute("INSERT INTO temps (temp,date) VALUES (?,?)",(self.temp,datetime.datetime.now()) )
+    conn.commit()
     return self.temp, self.fanStatus, self.threshold
 
 # instace of Arduino class
@@ -69,14 +75,23 @@ class CityForm(FlaskForm):
   city = StringField('C I T Y', validators=[DataRequired()])
   submit = SubmitField('Submit')
 
+
 # class for the form to change temp threshold
 class TempForm(FlaskForm):
   tempTreshold = DecimalField('Temperature Threshold', validators=[DataRequired()])
   submit = SubmitField('Submit')
 
+
+def getDBConnection():
+  conn = sql.connect('database.db')
+  conn.execute('CREATE TABLE if not exists temps (temp REAL, date TEXT)')
+  return conn
+
+
 # covert the temp received from API from kelvin to celsius
 def k2c(k):
   return k - 273.15
+
 
 # get temp from web API
 def getTemp(city):
@@ -93,6 +108,7 @@ def getTemp(city):
     return k2c(current_temperature)
   else:
     return 'City Not Found'
+
 
 # route used by Flask to show the main page
 @app.route('/', methods=['GET', 'POST'])
@@ -127,6 +143,7 @@ def changeTempThreshold():
   # return the user to the main page
   return redirect('/')
 
+
 # route used when button to submit city is clicked, the user never sees this
 @app.route('/changeCity', methods=['GET', 'POST'])
 def changeCity():
@@ -143,6 +160,18 @@ def changeCity():
       pass
   # return the user to the main page
   return redirect('/')
+
+
+@app.route('/list')
+def list():
+  conn = getDBConnection()
+  conn.row_factory = sql.Row
+  cur = conn.cursor()
+  cur.execute("select * from temps")
+  rows = cur.fetchall();
+  # return the webpage and pass it all of the information
+  return render_template( 'list.html', rows=rows )
+
 
 # run the app
 # this if chechs to make sure this is the python file is the one that is being run
