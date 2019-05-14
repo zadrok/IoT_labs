@@ -4,7 +4,7 @@ from wtforms import DecimalField, StringField, SubmitField
 from wtforms.validators import DataRequired
 import requests, json
 import serial
-import sqlite3
+import sqlite3 as sql
 import datetime
 
 port = "/dev/ttyACM0"
@@ -54,8 +54,9 @@ class Arduino:
             if 't' not in vals[1]:
               self.temp = float(vals[1])
               conn = getDBConnection()
-              cur = con.cursor()
-              cur.execute("INSERT INTO temps (name,date) VALUES (?,?)",(self.temp,datetime.datetime.now()) )
+              cur = conn.cursor()
+              cur.execute("INSERT INTO temps (temp,date) VALUES (?,?)",(self.temp,datetime.datetime.now()) )
+              conn.commit()
           elif vals[0] == 'fanStatus':
             # print( 'vals is fanStatus' )
             self.fanStatus = True if int(vals[1]) > 0 else False
@@ -82,7 +83,7 @@ class TempForm(FlaskForm):
 
 
 def getDBConnection():
-  conn = sqlite3.connect('database.db')
+  conn = sql.connect('database.db')
   conn.execute('CREATE TABLE if not exists temps (temp REAL, date TEXT)')
   return conn
 
