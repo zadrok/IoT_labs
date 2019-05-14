@@ -53,10 +53,6 @@ class Arduino:
             # print( 'vals is temp' )
             if 't' not in vals[1]:
               self.temp = float(vals[1])
-              conn = getDBConnection()
-              cur = conn.cursor()
-              cur.execute("INSERT INTO temps (temp,date) VALUES (?,?)",(self.temp,datetime.datetime.now()) )
-              conn.commit()
           elif vals[0] == 'fanStatus':
             # print( 'vals is fanStatus' )
             self.fanStatus = True if int(vals[1]) > 0 else False
@@ -65,6 +61,10 @@ class Arduino:
             self.threshold = float(vals[1])
         # print( 'local memory: ' + 'temp: ' + str( self.temp ) + ', fanStatus: ' + str( self.fanStatus ) + ', threshold: ' + str( self.threshold ) )
 
+    conn = getDBConnection()
+    cur = conn.cursor()
+    cur.execute("INSERT INTO temps (temp,date) VALUES (?,?)",(self.temp,datetime.datetime.now()) )
+    conn.commit()
     return self.temp, self.fanStatus, self.threshold
 
 # instace of Arduino class
